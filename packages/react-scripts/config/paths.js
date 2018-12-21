@@ -8,6 +8,8 @@
 // @remove-on-eject-end
 'use strict';
 
+const app = process.env.app;
+
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
@@ -102,20 +104,22 @@ module.exports = {
   appBuild: resolveApp('build'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appIndexJs: resolveModule(resolveApp, `${app}/src/index`),
+  appTrade: resolveApp(`trade/src`),
+  appAccounts: resolveApp(`accounts/src`),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveApp(`${app}/src`),
   appTsConfig: resolveApp('tsconfig.json'),
   yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveModule(resolveApp, 'src/setupTests'),
-  proxySetup: resolveApp('src/setupProxy.js'),
+  testsSetup: resolveModule(resolveApp, `${app}/src/setupTests`),
+  proxySetup: resolveApp(`${app}/src/setupProxy.js`),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   // These properties only exist before ejecting:
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
-  appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
+  appTypeDeclarations: resolveApp(`${app}/src/react-app-env.d.ts`),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
 };
 
