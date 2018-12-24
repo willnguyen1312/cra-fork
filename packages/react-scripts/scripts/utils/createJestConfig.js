@@ -12,14 +12,7 @@ const chalk = require('chalk');
 const paths = require('../../config/paths');
 
 module.exports = (resolve, rootDir, isEjecting) => {
-  // Use this instead of `paths.testsSetup` to avoid putting
-  // an absolute filename into configuration after ejecting.
-  const setupTestsMatches = paths.testsSetup.match(/src[/\\]setupTests\.(.+)/);
-  const setupTestsFileExtension =
-    (setupTestsMatches && setupTestsMatches[1]) || 'js';
-  const setupTestsFile = fs.existsSync(paths.testsSetup)
-    ? `<rootDir>/src/setupTests.${setupTestsFileExtension}`
-    : undefined;
+  const setupTestsFile = `<rootDir>/../setupTests.js`;
 
   const config = {
     collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
@@ -60,8 +53,17 @@ module.exports = (resolve, rootDir, isEjecting) => {
     moduleNameMapper: {
       '^react-native$': 'react-native-web',
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-      'trade(.*)': '<rootDir>/trade/src/$1',
-      'accounts(.*)': '<rootDir>/accounts/src/$1',
+      '^accounts/(.*)$': '<rootDir>/../accounts/src/$1',
+      '^chart/(.*)$': '<rootDir>/../chart/src/$1',
+      '^home/(.*)$': '<rootDir>/../home/src/$1',
+      '^invest/(.*)$': '<rootDir>/../invest/src/$1',
+      '^tokens/(.*)$': '<rootDir>/../tokens/src/$1',
+      '^trade/(.*)$': '<rootDir>/../trade/src/$1',
+      '^package.json': '<rootDir>/../package.json',
+      '^core/resources/(.*)$': '<rootDir>/../core/src/resources/$1',
+      '^core/resources': '<rootDir>/../core/src/resources/index-jest',
+      '^core/translate': '<rootDir>/../core/src/translate/index-jest',
+      '^core/(.*)$': '<rootDir>/../core/src/$1',
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
       ext => !ext.includes('mjs')
