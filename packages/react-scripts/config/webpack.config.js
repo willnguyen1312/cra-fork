@@ -258,7 +258,7 @@ module.exports = function(webpackEnv) {
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
-      modules: ['node_modules'].concat(
+      modules: ['node_modules', paths.appNodeModules, paths.appSrc].concat(
         // It is guaranteed to exist because we tweak it in `env.js`
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
@@ -312,28 +312,28 @@ module.exports = function(webpackEnv) {
 
         // First, run the linter.
         // It's important to do this before Babel processes the JS.
-        {
-          test: /\.(js|mjs|jsx)$/,
-          enforce: 'pre',
-          use: [
-            {
-              options: {
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
-                eslintPath: require.resolve('eslint'),
-                // @remove-on-eject-begin
-                baseConfig: {
-                  extends: [require.resolve('eslint-config-react-app')],
-                  settings: { react: { version: '999.999.999' } },
-                },
-                ignore: false,
-                useEslintrc: false,
-                // @remove-on-eject-end
-              },
-              loader: require.resolve('eslint-loader'),
-            },
-          ],
-          include: paths.appSrc,
-        },
+        // {
+        //   test: /\.(js|mjs|jsx)$/,
+        //   enforce: 'pre',
+        //   use: [
+        //     {
+        //       options: {
+        //         formatter: require.resolve('react-dev-utils/eslintFormatter'),
+        //         eslintPath: require.resolve('eslint'),
+        //         // @remove-on-eject-begin
+        //         baseConfig: {
+        //           extends: [require.resolve('eslint-config-react-app')],
+        //           settings: { react: { version: '999.999.999' } },
+        //         },
+        //         ignore: false,
+        //         useEslintrc: false,
+        //         // @remove-on-eject-end
+        //       },
+        //       loader: require.resolve('eslint-loader'),
+        //     },
+        //   ],
+        //   include: paths.appSrc,
+        // },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -354,7 +354,7 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: [paths.appSrc, paths.appTrade, paths.appAccounts],
+              exclude: /(node_modules|bower_components)/,
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
