@@ -98,12 +98,12 @@ const haveOwnHtml = fs.existsSync(resolveApp('public/index.html'));
 
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
-  dotenv: resolveApp('.env'),
+  dotenv: resolveApp('../.env'),
   appPath: resolveApp('.'),
   selfPublic: resolveApp('./public'),
   sentry: resolveApp('.sentryclirc'),
   appBuild: resolveApp('build'),
-  appPublic: resolveApp('public'),
+  appPublic: resolveApp('../core/public'),
   appHtml: haveOwnHtml
     ? resolveApp('public/index.html')
     : resolveApp('../core/public/index.html'),
