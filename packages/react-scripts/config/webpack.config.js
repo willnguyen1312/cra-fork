@@ -51,6 +51,57 @@ const cssRegex = /\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+// Custom for specific build at QUOINE
+const { getSeoConfig } = require('./seo');
+// get SEO config by app (trade, accounts)
+const appName = process.env.REACT_APP_APP;
+const vendor = process.env.REACT_APP_VENDOR_NAME;
+const { seoRoot, seoData } = getSeoConfig(vendor, appName);
+const seoDataByApp = seoData[appName];
+const getHtmlMeta = () => {
+  const googleSiteVerfification = {
+    accounts: '',
+    trade: 'HKk8lmROdvYyDdGR8Per3DuhJWe6vEhmgd1S2cC8fOs',
+  };
+
+  return {
+    'google-site-verification': googleSiteVerfification[appName],
+  };
+};
+
+const SeoPlugins = [];
+
+// generate html template for SEO purpose
+seoDataByApp &&
+  seoDataByApp.forEach(seoInfo => {
+    SeoPlugins.push(
+      new HtmlWebpackPlugin({
+        // generate filename for each route
+        filename: seoInfo.parentFolder
+          ? `${seoInfo.parentFolder}/${seoInfo.path}.html`
+          : `${seoInfo.path}.html`,
+        // Google bot will crawl this information
+        title: seoInfo.title,
+        description: seoInfo.description,
+        // others
+        inject: true,
+        template: paths.appHtml,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true,
+        },
+      })
+    );
+  });
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
@@ -536,6 +587,9 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            title: seoRoot.title,
+            description: seoRoot.description,
+            meta: getHtmlMeta(),
           },
           isEnvProduction
             ? {
@@ -659,6 +713,7 @@ module.exports = function(webpackEnv) {
         // overice by its own
         { from: paths.selfPublic, to: paths.appBuild, ignore: [paths.appHtml] },
       ]),
+      ...SeoPlugins,
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
