@@ -26,6 +26,7 @@ const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 // const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
@@ -580,6 +581,14 @@ module.exports = function(webpackEnv) {
       ],
     },
     plugins: [
+      // Silence mini-css-extract-plugin generating lots of warnings for CSS ordering.
+      // We use CSS modules that should not care for the order of CSS imports, so we
+      // should be safe to ignore these.
+      //
+      // See: https://github.com/webpack-contrib/mini-css-extract-plugin/issues/250
+      new FilterWarningsPlugin({
+        exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
