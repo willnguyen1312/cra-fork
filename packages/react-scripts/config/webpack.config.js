@@ -53,7 +53,7 @@ const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // Custom for specific build at QUOINE
-const { getSeoConfig } = require('./seo');
+const { getSeoConfig } = require(paths.seoPath);
 // get SEO config by app (trade, accounts)
 const appName = process.env.REACT_APP_APP;
 const vendor = process.env.REACT_APP_VENDOR_NAME;
